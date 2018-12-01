@@ -1,0 +1,27 @@
+{
+  "name": "neeo_driver-mhub",
+  "version": "0.0.1",
+  "description": "HDA Mhub driver for NEEO",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nklerk/neeo_driver-mhub.git"
+  },
+  "keywords": [
+    "NEEO",
+    "HDA",
+    "MHUB"
+  ],
+  "author": "Niels de Klerk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nklerk/neeo_driver-mhub/issues"
+  },
+  "homepage": "https://github.com/nklerk/neeo_driver-mhub#readme",
+  "dependencies": {
+    "hdamhub": "git+https://github.com/nklerk/HDAmhub.git"
+  }
+}

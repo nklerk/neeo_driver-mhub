@@ -10,36 +10,45 @@ module.exports = class hdaController {
     return new hdaController();
   }
 
-  onButtonPressed(name, deviceId) {
-    console.log(`${name} Button pressed for ${deviceId}`);
+  onButtonPressed(commandName, deviceId) {
+    let api = new hda.api(deviceId);
+    if (commandName == "POWER ON") api.powerOn();
+    if (commandName == "POWER OFF") api.powerOff();
+    if (commandName.match(/INPUT\_([0-9])\_([a-z])/)) {
+      //.length == 3
+      const [NULL, input, output] = commandName.match(/INPUT\_([0-9])\_([a-z])/);
+      api.switchOutputInput(output, input);
+    }
+    console.log(`${commandName} Button pressed for ${deviceId}`);
   }
 
   async discoverDevices(optionalDeviceId) {
-    console.log("[CONTROLLER] discovery call", optionalDeviceId);
     let mhubdrivers = [];
-
+    let mhubs = [];
     if (typeof optionalDeviceId == "undefined") {
-      let mhubs = await hda.discover();
-      for (let driver of mhubs) {
-        let mhubsysinfo = await driver.getSystemInfo();
-        let id = driver.host;
-        let deviceName = `${mhubsysinfo.mhub.mhub_official_name}, ${driver.host}`;
-        let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
-        mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
-        mhubDriver.setSpecificName(deviceName);
-        mhubDriver.setType("HDMISWITCH");
-        mhubDriver.addCapability("dynamicDevice");
-        let [inputs, outputs] = hdaGetInputsOutputs(mhubsysinfo);
-        hdaBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
-        mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
-        mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
-        mhubDriver.addButtonHander(this.onButtonPressed);
-        mhubdrivers.push({ id, name: deviceName, device: mhubDriver });
-      }
-      return mhubdrivers;
+      console.log("[CONTROLLER] discovery call");
+      mhubs = await hda.discover();
     } else {
-      console.log("What's gebeurt???: " + optionalDeviceId);
+      console.log("[CONTROLLER] Requesting HDA MHUB: ", optionalDeviceId);
+      mhubs = [new hda.api(optionalDeviceId)];
     }
+    for (let driver of mhubs) {
+      let mhubsysinfo = await driver.getSystemInfo();
+      let id = driver.host;
+      let deviceName = `${mhubsysinfo.mhub.mhub_official_name}, ${driver.host}`;
+      let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
+      mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
+      mhubDriver.setSpecificName(deviceName);
+      mhubDriver.setType("HDMISWITCH");
+      mhubDriver.addCapability("dynamicDevice");
+      let [inputs, outputs] = hdaGetInputsOutputs(mhubsysinfo);
+      hdaBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
+      mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
+      mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
+      mhubDriver.addButtonHander(this.onButtonPressed);
+      mhubdrivers.push({ id, name: deviceName, device: mhubDriver });
+    }
+    return mhubdrivers;
   }
 };
 

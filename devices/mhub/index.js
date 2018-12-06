@@ -1,4 +1,5 @@
-const hda = require("hdamhub");
+"use strict";
+
 const neeoapi = require("neeo-sdk");
 const hdaController = require("./controller");
 const CONSTANTS = require("./constants");

@@ -60,31 +60,20 @@ module.exports = class hdaController {
         let [inputs, outputs] = hdaGetInputsOutputs(mhubsysinfo);
 
         let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
-        mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
+        //mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
         mhubDriver.setSpecificName(deviceName);
         mhubDriver.setType("HDMISWITCH");
-        //mhubDriver.addCapability("dynamicDevice");
+        mhubDriver.addCapability("dynamicDevice");
         hdaBuildInputOutputButtons(mhubDriver, inputs, outputs);
-        mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
-        mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
+        //mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
+        //mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
         //mhubDriver.addButtonHander(controller.onButtonPressed);
-
-        console.log(driver.host);
-        mhubdrivers.push({ id, name: deviceName, driver: mhubDriver });
+        mhubdrivers.push({ id, name: deviceName, device: mhubDriver });
       }
       return mhubdrivers;
+    } else {
+      console.log("FIND ME!!!!!");
     }
-    /*     return sharedDeviceDiscovery(optionalDeviceId).then(discoveryResults => {
-      return discoveryResults.map(device => {
-        return {
-          id: device.id,
-          name: device.name,
-          room: device.room,
-          reachable: device.reachable,
-          device: device.pro ? this.buildProDevice() : this.buildLightDevice()
-        };
-      });
-    }); */
   }
 };
 

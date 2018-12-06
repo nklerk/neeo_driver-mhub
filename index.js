@@ -12,10 +12,7 @@ neeoapi
     devices: drivers //Discovered Mhubs, Ucontrol
   })
   .then(() => {
-    console.log("# READY!");
-    console.log("# use the NEEO app to search for: ");
-    console.log('#   "mhub ". For the mhub matrix');
-    console.log('#   "uControl ". For individual uControl');
+    console.log("# READY! use the NEEO app to search for 'HDA' ");
   })
   .catch(err => {
     console.error("ERROR!", err);

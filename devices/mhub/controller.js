@@ -3,25 +3,8 @@ const hda = require("hdamhub");
 const neeoapi = require("neeo-sdk");
 const CONSTANTS = require("./constants");
 
-/* let sliderValue = 0;
-let switchValue = true; */
-
 module.exports = class hdaController {
-  constructor() {
-    /*
-     * Getters and setters:
-     * - The getters are used to send the current Values through the SDK (read)
-     * - The setter allow changing values on the Brain and handling the changes here (write)
-     */
-    /*     this.sliderHandlers = {
-      getter: deviceId => this.sliderGet(deviceId),
-      setter: (deviceId, params) => this.sliderSet(deviceId, params)
-    };
-    this.switchHandlers = {
-      getter: deviceId => this.switchSet(deviceId),
-      setter: (deviceId, params) => this.switchSet(deviceId, params)
-    }; */
-  }
+  constructor() {}
 
   static build() {
     return new hdaController();
@@ -29,22 +12,6 @@ module.exports = class hdaController {
 
   onButtonPressed(name, deviceId) {
     console.log(`${name} Button pressed for ${deviceId}`);
-  }
-
-  buildProDevice() {
-    //NOTE the device name must match the "root" name of the driver!
-    return (
-      neeoapi
-        .buildDevice(CONSTANTS.MHUB_DEVICE_NAME)
-        .setSpecificName("PRO LIGHT")
-        .setManufacturer("NEEO")
-        .setType("light")
-        .addCapability("dynamicDevice")
-        // Here we add the power switch like the lite device
-        .addSwitch(CONSTANTS.POWER_SWITCH, this.switchHandlers)
-        // And the slider a feature not available on the lite device
-        .addSlider(CONSTANTS.DIMMER, this.sliderHandlers)
-    );
   }
 
   async discoverDevices(optionalDeviceId) {
@@ -57,22 +24,21 @@ module.exports = class hdaController {
         let mhubsysinfo = await driver.getSystemInfo();
         let id = driver.host;
         let deviceName = `${mhubsysinfo.mhub.mhub_official_name}, ${driver.host}`;
-        let [inputs, outputs] = hdaGetInputsOutputs(mhubsysinfo);
-
         let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
-        //mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
+        mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
         mhubDriver.setSpecificName(deviceName);
         mhubDriver.setType("HDMISWITCH");
         mhubDriver.addCapability("dynamicDevice");
-        hdaBuildInputOutputButtons(mhubDriver, inputs, outputs);
-        //mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
-        //mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
-        //mhubDriver.addButtonHander(controller.onButtonPressed);
+        let [inputs, outputs] = hdaGetInputsOutputs(mhubsysinfo);
+        hdaBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
+        mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
+        mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
+        mhubDriver.addButtonHander(this.onButtonPressed);
         mhubdrivers.push({ id, name: deviceName, device: mhubDriver });
       }
       return mhubdrivers;
     } else {
-      console.log("FIND ME!!!!!");
+      console.log("What's gebeurt???: " + optionalDeviceId);
     }
   }
 };

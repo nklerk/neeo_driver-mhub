@@ -9,9 +9,6 @@ let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
 mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
 mhubDriver.setType("HDMISWITCH");
 mhubDriver.addAdditionalSearchToken("HDA");
-mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
-mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
-mhubDriver.addButtonHander(controller.onButtonPressed);
 mhubDriver.enableDiscovery(
   {
     headerText: CONSTANTS.DISCOVER_HEADER,

@@ -7,7 +7,15 @@ This is a HDA MHUB driver for NEEO.
 This code requires NEEO Firmware 52.x or later and SDK version 52.x or later.
 Both versions are not yet available.
 
-## Versions. 0.1.0
+## Version history:
+
+Versions. 0.1.1
+
+- Changed INPUT selection labeling to "INPUT <InputId> TO <OutputId>"
+- Changed INPUT selection naming to "INPUT HDMI <InputId><OutputId>" // Complying to SDK Naming convention.
+- Started to work on uControl driver.
+
+Versions. 0.1.0
 
 - Discovery is working.
 - Dynamic assignments of input(/output) buttons.

@@ -9,13 +9,22 @@ Both versions are not yet available.
 
 ## Version history:
 
-Versions. 0.1.1
+Version 0.2.0
+
+- uControl implemented
+- Custom drivers implementer. (Edit. customDriver.js)
+
+Version 0.1.2
+
+- Added Ucontrol device discovery
+
+Version 0.1.1
 
 - Changed INPUT selection labeling to "INPUT <InputId> TO <OutputId>"
 - Changed INPUT selection naming to "INPUT HDMI <InputId><OutputId>" // Complying to SDK Naming convention.
 - Started to work on uControl driver.
 
-Versions. 0.1.0
+Version 0.1.0
 
 - Discovery is working.
 - Dynamic assignments of input(/output) buttons.

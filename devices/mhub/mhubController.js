@@ -4,11 +4,11 @@ const hdaMhub = require("hdamhub");
 const neeoapi = require("neeo-sdk");
 const CONSTANTS = require("./constants");
 
-module.exports = class hdaController {
+module.exports = class controller {
   constructor() {}
 
   static build() {
-    return new hdaController();
+    return new controller();
   }
 
   onButtonPressed(commandName, deviceId) {
@@ -17,7 +17,6 @@ module.exports = class hdaController {
     if (commandName == "POWER ON") api.powerOn();
     if (commandName == "POWER OFF") api.powerOff();
     if (commandName.match(/INPUT HDMI ([0-9])([a-z])/)) {
-      //.length == 3
       const [NULL, input, output] = commandName.match(/INPUT HDMI ([0-9])([a-z])/);
       api.switchOutputInput(output, input);
     }
@@ -43,8 +42,8 @@ module.exports = class hdaController {
       mhubDriver.setSpecificName(deviceName);
       mhubDriver.setType("HDMISWITCH");
       mhubDriver.addCapability("dynamicDevice");
-      let [inputs, outputs] = hdaGetInputsOutputs(mhubsysinfo);
-      hdaBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
+      let [inputs, outputs] = mhubGetInputsOutputs(mhubsysinfo);
+      mhubBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
       mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
       mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
       mhubDriver.addButtonHander(this.onButtonPressed);
@@ -52,13 +51,9 @@ module.exports = class hdaController {
     }
     return mhubdrivers;
   }
-
-  async discoverUCDevices(optionalDeviceId, deviceType) {
-    console.log(`Discovery Ucontrol: ${optionalDeviceId}, ${deviceType}`);
-  }
 };
 
-function hdaGetInputsOutputs(mhubsysinfo) {
+function mhubGetInputsOutputs(mhubsysinfo) {
   let inputs = [];
   let outputs = [];
   for (let i in mhubsysinfo.io_data.input_audio) {
@@ -85,76 +80,10 @@ function hdaGetInputsOutputs(mhubsysinfo) {
   return [inputs, outputs];
 }
 
-function hdaBuildInputOutputButtons(mhubDriver, inputs, outputs) {
+function mhubBuildInputOutputButtons(mhubDriver, inputs, outputs) {
   for (let input of inputs) {
     for (let output of outputs) {
       mhubDriver.addButton({ name: `INPUT HDMI ${input.id}${output.id}`, label: `INPUT ${input.id} to ${output.id}` });
     }
   }
-}
-
-function neeoToUcontrolMapping() {
-  return {
-    "DIGIT 0": "0",
-    "DIGIT 1": "1",
-    "DIGIT 2": "2",
-    "DIGIT 3": "3",
-    "DIGIT 4": "4",
-    "DIGIT 5": "5",
-    "DIGIT 6": "6",
-    "DIGIT 7": "7",
-    "DIGIT 8": "8",
-    "DIGIT 9": "9",
-    "CHANNEL UP": "10",
-    "CHANNEL DOWN": "11",
-    PLAY: "12",
-    PAUSE: "13",
-    "PLAY PAUSE TOGGLE": "14",
-    STOP: "15",
-    FORWARD: "16",
-    NEXT: "17",
-    REVERSE: "18",
-    PREVIOUS: "19",
-    RECORD: "20",
-    "CURSOR UP": "21",
-    "CURSOR DOWN": "22",
-    "CURSOR LEFT": "23",
-    "CURSOR RIGHT": "24",
-    "CURSOR ENTER": "25",
-    BACK: "26",
-    MENU: "27",
-    HOME: "28",
-    GUIDE: "29",
-    "FUNCTION RED": "30",
-    "FUNCTION GREEN": "31",
-    "FUNCTION YELLOW": "32",
-    "FUNCTION BLUE": "33",
-    "VOLUME UP": "34",
-    "VOLUME DOWN": "35",
-    "MUTE TOGGLE": "36",
-    INFO: "37",
-    "POWER TOGGLE": "38",
-    "POWER OFF": "39",
-    SUBTITLE: "40",
-    "INPUT TOGGLE": "41",
-    EJECT: "42",
-    LANGUAGE: "43",
-    "3D": "44",
-    "Top Menu": "45",
-    "Pop-up Menu": "46",
-    "Aspect Ratio": "47",
-    Help: "48",
-    "POWER ON": "49",
-    "No / Thumbs Down": "50",
-    "Yes / Thumbs Up": "51",
-    "Page Up": "52",
-    "Page Down": "53",
-    Search: "54",
-    EXIT: "55",
-    "Catch Up": "56",
-    Playlist: "57",
-    "MY RECORDINGS": "57",
-    "Box Office": "58",
-    DSTV: "59"
-  };
 }

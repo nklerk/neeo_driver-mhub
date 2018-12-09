@@ -3,6 +3,7 @@
 const neeoapi = require("neeo-sdk");
 const mhubController = require("./mhubController").build();
 const uControlController = require("./uControlController").build();
+const customController = require("./customController").build();
 const CONSTANTS = require("./constants");
 
 //const mController = mhubController.build();
@@ -46,7 +47,7 @@ customDriver.enableDiscovery(
     description: CONSTANTS.DISCOVER_DESCRIPTION,
     enableDynamicDeviceBuilder: true
   },
-  optionalDeviceId => uControlController.discoverDevices(optionalDeviceId)
+  optionalDeviceId => customController.discoverDevices(optionalDeviceId)
 );
 devices.push(customDriver);
 

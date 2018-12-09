@@ -6,7 +6,7 @@ module.exports.drivers = () => {
     {
       uniqueId: "blurayPlayer1", // This must be a unique name. and is used to identify the driver.
       manufacturer: "SONY", // Manufacturer name.
-      deviceName: "BlurayPlayer", // name of the device.
+      deviceName: "Bluray Player (EXAMPLE)", // name of the device.
       deviceType: "DVD", // device type, use one of these: "MEDIAPLAYER", "GAMECONSOLE", "PROJECTOR", "AVRECEIVER", "DVB", "DVD" or "TV"
       mhubHostname: "MHUB431U.local", // use the multicast hostname (mdns), or ip address.
       mhubIoPort: "1", //the io port on the mhub where the device is connected to
@@ -19,9 +19,9 @@ module.exports.drivers = () => {
 
     //Second Driver
     {
-      uniqueId: "appleTv1", // This must be a unique name. and is used to identify the driver.
+      uniqueId: "WindowsMCE1", // This must be a unique name. and is used to identify the driver.
       manufacturer: "Microsoft", // Manufacturer name.
-      deviceName: "Mediacenter", // name of the device.
+      deviceName: "Mediacenter (EXAMPLE)", // name of the device.
       deviceType: "MEDIAPLAYER", // device type, use one of these: "MEDIAPLAYER", "GAMECONSOLE", "PROJECTOR", "AVRECEIVER", "DVB", "DVD" or "TV"
       mhubHostname: "MHUB431U.local", // use the multicast hostname (mdns), or ip address.
       mhubIoPort: "2", //the io port on the mhub where the device is connected to

@@ -1,8 +1,8 @@
 {
   "name": "neeo_driver-mhub",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "HDA Mhub driver for NEEO",
-  "main": "index.js",
+  "main": "",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nklerk/neeo_driver-mhub.git"
@@ -22,19 +22,13 @@
     "bluebird": "^3.5.0",
     "glob": "^7.1.2",
     "hdamhub": "git+https://github.com/nklerk/HDAmhub.git",
-    "neeo-sdk": "file:../../../../../Downloads/neeo-sdk-next/neeo-sdk-next",
+    "neeo-sdk": "git+https://github.com/NEEOInc/neeo-sdk.git#next",
     "nyc": "^12.0.2"
   },
   "scripts": {
     "test": "nyc mocha --exit \"test/**/*.js\"",
     "jshint": "jshint --show-non-errors --verbose lib/**/*.js",
-    "start": "neeo-sdk start",
-    "example:forwardaction": "node scripts/forwardaction/index.js",
-    "example:recipe": "node scripts/recipe/listAllRecipes.js",
-    "clean": "rm -rf ./dist && mkdir -p ./dist",
-    "release": "npm run jshint && npm run clean && npm run release:copy && npm run release:changedep",
-    "release:copy": "cp -r ./devices ./lib ./neeo-driver-example ./scripts ./test ./dist && cp .travis.yml .jshintrc .gitignore .editorconfig *.md package.json License ./dist",
-    "release:changedep": "node ./build/change-dependency.js"
+    "start": "neeo-sdk start"
   },
   "nyc": {
     "check-coverage": true,
@@ -52,9 +46,9 @@
     ]
   },
   "neeoSdkOptions": {
-    "serverName": "neeo-sdk-examples-server",
+    "serverName": "neeo-sdk-server",
     "serverPort": 6336,
-    "brainHost": "10.2.1.64",
+    "brainHost": "",
     "brainPort": ""
   }
 }

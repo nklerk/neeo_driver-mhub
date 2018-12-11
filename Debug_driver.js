@@ -3,6 +3,11 @@
 const neeoapi = require("neeo-sdk");
 const hdadrivers = require("./devices/mhub");
 
+console.log("#");
+console.log("# Use 'Debug_driver.js' for debug and development.");
+console.log("# To start the driver use the cli command 'npm start'.");
+console.log("#");
+
 let drivers = hdadrivers.devices;
 neeoapi
   .startServer({

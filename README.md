@@ -1,30 +1,48 @@
 "# neeo_driver-mhub"
 
-This is a HDA MHUB driver for NEEO.
+# HDANYWHERE MHUB driver for NEEO.
 
-!! Work in progress. !!
+This driver adds HDANYWHERE MHUB support to NEEO.
+the driver includes:
 
-This code requires NEEO Firmware 52.x or later and SDK version 52.x or later.
-Both versions are not yet available.
+### MHUB system controll
+
+⋅⋅⋅INPUT and OUTPUT selection
+⋅⋅⋅MHUB system power.
+
+In the NEEO app search for: HDA, HD Anywhere, MHUB
+
+### uControl
+
+⋅⋅⋅Exposes the on MHUB installed uControl drivers to NEEO.
+
+In the NEEO app search for: HDA, HD Anywhere, uControl
+
+### Custom Pronto HEX
+
+Expose custom build drivers to NEEO. Simply add pronto HEX to build a custom driver.
+Edit customDriver.js to add custom drivers.
+
+In the NEEO app search for: HDA, HD Anywhere, Custom Pronto HEX
 
 ## Version history:
 
-Version 0.2.0
+#### Version 0.2.0
 
 - uControl implemented
 - Custom drivers implementer. (Edit. customDriver.js)
 
-Version 0.1.2
+#### Version 0.1.2
 
 - Added Ucontrol device discovery
 
-Version 0.1.1
+#### Version 0.1.1
 
 - Changed INPUT selection labeling to "INPUT <InputId> TO <OutputId>"
 - Changed INPUT selection naming to "INPUT HDMI <InputId><OutputId>" // Complying to SDK Naming convention.
 - Started to work on uControl driver.
 
-Version 0.1.0
+#### Version 0.1.0
 
 - Discovery is working.
 - Dynamic assignments of input(/output) buttons.

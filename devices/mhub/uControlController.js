@@ -15,7 +15,6 @@ module.exports = class controller {
   onButtonPressed(commandName, deviceId) {
     let [mhub, io] = deviceId.split("_uControl_");
     let api = new hdaMhub.api(mhub);
-    commandName = "uControl_22";
     let commandNumber = mappings.neeoButtonToHdaButton()[commandName] || commandName.replace("uControl_", "");
     api.executeUcontrolCommand(io, commandNumber);
     console.log(`${commandName} Button pressed for ${deviceId}`);
@@ -34,7 +33,7 @@ module.exports = class controller {
       mhubs = [new hdaMhub.api(mhub)];
     }
     for (let mhub of mhubs) {
-      //let mhubsysinfo = await mhub.getSystemInfo();
+      console.log(`Found host: ${mhub.host}`);
       let uControlStatus = await mhub.getUControlStatus();
       let uControlPorts = getUcontrolPorts(uControlStatus);
       for (let io of uControlPorts) {
@@ -42,6 +41,7 @@ module.exports = class controller {
         if (typeof uControl != "undefined") {
           let id = `${mhub.host}_uControl_${io}`;
           let deviceName = `${mhub.host.replace(".local", "")}: ${io}, ${uControl.name}`;
+          console.log(`Building NEEO driver for ${deviceName}`);
           let ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
           ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
           ucDriver.setSpecificName(deviceName);
@@ -53,6 +53,7 @@ module.exports = class controller {
         }
       }
     }
+    console.log(`Offering drivers to NEEO.`);
     return ucDrivers;
   }
 };

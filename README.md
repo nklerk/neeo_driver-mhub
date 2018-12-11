@@ -38,6 +38,10 @@ For debugging use "node Debug_driver.js"
 
 ## Version history:
 
+#### Version 0.2.2
+
+- Bugfix.
+
 #### Version 0.2.1
 
 - Fixed uControl IO id.

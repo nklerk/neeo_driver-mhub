@@ -7,21 +7,21 @@ the driver includes:
 
 ### MHUB system controll
 
-⋅⋅⋅INPUT and OUTPUT selection
-⋅⋅⋅MHUB system power.
+- INPUT and OUTPUT selection
+- MHUB system power.
 
 In the NEEO app search for: HDA, HD Anywhere, MHUB
 
 ### uControl
 
-⋅⋅⋅Exposes the on MHUB installed uControl drivers to NEEO.
+- Exposes the on MHUB installed uControl drivers to NEEO.
 
 In the NEEO app search for: HDA, HD Anywhere, uControl
 
 ### Custom Pronto HEX
 
-Expose custom build drivers to NEEO. Simply add pronto HEX to build a custom driver.
-Edit customDriver.js to add custom drivers.
+- Expose custom build drivers to NEEO. Simply add pronto HEX to build a custom driver.
+- Edit customDriver.js to add custom drivers.
 
 In the NEEO app search for: HDA, HD Anywhere, Custom Pronto HEX
 

@@ -1,5 +1,3 @@
-"# neeo_driver-mhub"
-
 # HDANYWHERE MHUB driver for NEEO.
 
 This driver adds HDANYWHERE MHUB support to NEEO.

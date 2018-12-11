@@ -73,14 +73,17 @@ function buildButtons(mhubDriver, irpack) {
 
 function getUcontrolPorts(uControlStatus) {
   let uControlPorts = [];
+  let io = 1;
   if (uControlStatus && uControlStatus.input && typeof uControlStatus.input == "object") {
     for (let i of uControlStatus.input) {
-      if (i.irpack) uControlPorts.push(`${i.id}`);
+      if (i.irpack) uControlPorts.push(`${io}`);
+      io = io + 1;
     }
   }
   if (uControlStatus && uControlStatus.output && typeof uControlStatus.output == "object") {
     for (let i of uControlStatus.output) {
-      if (i.irpack) uControlPorts.push(`${i.id}`);
+      if (i.irpack) uControlPorts.push(`${io}`);
+      io = io + 1;
     }
   }
   return uControlPorts;

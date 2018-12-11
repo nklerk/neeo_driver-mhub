@@ -23,12 +23,30 @@ In the NEEO app search for: HDA, HD Anywhere, uControl
 
 In the NEEO app search for: HDA, HD Anywhere, Custom Pronto HEX
 
+## Running the driver.
+
+This driver requires NodeJs to be installed.
+
+Download the driver files and extract them,
+Use a terminal/command prompt and go to the extracted folder.
+
+Install dependencies with "npm install".
+
+Start the driver with "npm start".
+
+For debugging use "node Debug_driver.js"
+
 ## Version history:
+
+#### Version 0.2.1
+
+- Fixed uControl IO id.
+- Fixed Pronto Hex.
 
 #### Version 0.2.0
 
 - uControl implemented
-- Custom drivers implementer. (Edit. customDriver.js)
+- Custom drivers implemented. (Edit. customDriver.js)
 
 #### Version 0.1.2
 

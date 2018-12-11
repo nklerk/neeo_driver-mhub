@@ -2,7 +2,7 @@
   "name": "neeo_driver-mhub",
   "version": "0.2.1",
   "description": "HDA Mhub driver for NEEO",
-  "main": "",
+  "main": "Debug_driver.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nklerk/neeo_driver-mhub.git"

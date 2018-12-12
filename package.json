@@ -22,7 +22,7 @@
     "bluebird": "^3.5.0",
     "glob": "^7.1.2",
     "hdamhub": "git+https://github.com/nklerk/HDAmhub.git",
-    "neeo-sdk": "git+https://github.com/NEEOInc/neeo-sdk.git#next",
+    "neeo-sdk": "^0.52.15",
     "nyc": "^12.0.2"
   },
   "scripts": {

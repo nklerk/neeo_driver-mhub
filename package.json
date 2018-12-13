@@ -1,6 +1,6 @@
 {
   "name": "neeo_driver-mhub",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "HDA Mhub driver for NEEO",
   "main": "Debug_driver.js",
   "repository": {

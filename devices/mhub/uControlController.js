@@ -4,8 +4,9 @@ const hdaMhub = require("hdamhub");
 const neeoapi = require("neeo-sdk");
 const mappings = require("./mappings");
 const CONSTANTS = require("./constants");
+const dns = require("dns");
 
-let cachedMhubApis = {};
+let cachedMhubaddress = {};
 
 module.exports = class controller {
   constructor() {}
@@ -14,11 +15,14 @@ module.exports = class controller {
   }
 
   onButtonPressed(commandName, deviceId) {
-    let [mhub, io] = deviceId.split("_uControl_");
-    let api = getAPI(mhub);
-    let commandNumber = mappings.neeoButtonToHdaButton()[commandName] || commandName.replace("uControl_", "");
-    api.executeUcontrolCommand(io, commandNumber);
     console.log(`${commandName} Button pressed for ${deviceId}`);
+    new Promise((resolve, reject) => {
+      let [mhub, io] = deviceId.split("_uControl_");
+      let api = getAPI(mhub);
+      let commandNumber = mappings.neeoButtonToHdaButton()[commandName] || commandName.replace("uControl_", "");
+      api.executeUcontrolCommand(io, commandNumber);
+      resolve();
+    });
   }
 
   async discoverDevices(optionalDeviceId, deviceType) {
@@ -60,10 +64,26 @@ module.exports = class controller {
 };
 
 function getAPI(mhub) {
-  if (typeof cachedMhubApis[mhub] === undefined) {
-    cachedMhubApis[mhub] = new hdaMhub.api(mhub);
+  let api;
+  if (typeof cachedMhubaddress[mhub] === "undefined") {
+    api = new hdaMhub.api(mhub);
+  } else {
+    api = cachedMhubaddress[mhub].api;
   }
-  return cachedMhubApis[mhub];
+  cacheResolve(mhub);
+  return api;
+}
+
+function cacheResolve(mhub) {
+  if (typeof cachedMhubaddress[mhub] === "undefined" || cachedMhubaddress[mhub].time + 30000 < Date.now()) {
+    dns.lookup(mhub, (err, address, family) => {
+      if (!err) {
+        let api = new hdaMhub.api(address);
+        cachedMhubaddress[mhub] = { ip: address, time: Date.now(), api };
+        console.log(`IP for ${mhub} is: ${address}`);
+      }
+    });
+  }
 }
 
 function buildButtons(mhubDriver, irpack) {

@@ -38,9 +38,9 @@ For debugging use "node Debug_driver.js"
 
 ## Version history:
 
-#### Version 0.2.3
+#### Version 0.2.4
 
-- Posible speed hack.
+- Added IP and API caching to memory for increased performance.
 
 #### Version 0.2.2
 

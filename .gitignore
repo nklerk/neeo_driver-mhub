@@ -2,3 +2,5 @@ node_modules
 install
 test.js
 .git
+.vscode
+package-lock.json

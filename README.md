@@ -38,6 +38,10 @@ For debugging use "node Debug_driver.js"
 
 ## Version history:
 
+#### Version 0.2.3
+
+- Posible speed hack.
+
 #### Version 0.2.2
 
 - Bugfix.

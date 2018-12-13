@@ -5,16 +5,17 @@ const neeoapi = require("neeo-sdk");
 const mappings = require("./mappings");
 const CONSTANTS = require("./constants");
 
+let cachedMhubApis = {};
+
 module.exports = class controller {
   constructor() {}
-
   static build() {
     return new controller();
   }
 
   onButtonPressed(commandName, deviceId) {
     let [mhub, io] = deviceId.split("_uControl_");
-    let api = new hdaMhub.api(mhub);
+    let api = getAPI(mhub);
     let commandNumber = mappings.neeoButtonToHdaButton()[commandName] || commandName.replace("uControl_", "");
     api.executeUcontrolCommand(io, commandNumber);
     console.log(`${commandName} Button pressed for ${deviceId}`);
@@ -57,6 +58,13 @@ module.exports = class controller {
     return ucDrivers;
   }
 };
+
+function getAPI(mhub) {
+  if (typeof cachedMhubApis[mhub] === undefined) {
+    cachedMhubApis[mhub] = new hdaMhub.api(mhub);
+  }
+  return cachedMhubApis[mhub];
+}
 
 function buildButtons(mhubDriver, irpack) {
   for (let ir of irpack) {

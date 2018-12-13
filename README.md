@@ -40,7 +40,7 @@ For debugging use "node Debug_driver.js"
 
 #### Version 0.2.4
 
-- Added IP and API caching to memory for increased performance.
+- Increased performance.
 
 #### Version 0.2.2
 

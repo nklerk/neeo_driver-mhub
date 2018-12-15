@@ -7,21 +7,20 @@ const CONSTANTS = require("./constants");
 
 module.exports = class controller {
   constructor() {}
-
   static build() {
     return new controller();
   }
 
   onButtonPressed(commandName, deviceId) {
+    console.log(`${commandName} Button pressed for ${deviceId}`);
     for (let driver of customDrivers) {
       if (driver.uniqueId === deviceId) {
-        let hex = driver.buttons[commandName];
-        let io = driver.mhubIoPort;
-        let api = new hdaMhub.api(driver.mhubHostname);
+        const hex = driver.buttons[commandName];
+        const io = driver.mhubIoPort;
+        const api = new hdaMhub.api(driver.mhubHostname);
         api.sendProntoHex(io, hex);
       }
     }
-    console.log(`${commandName} Button pressed for ${deviceId}`);
   }
 
   async discoverDevices(optionalDeviceId, deviceType) {

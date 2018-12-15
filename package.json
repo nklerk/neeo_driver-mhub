@@ -1,7 +1,7 @@
 {
   "name": "neeo_driver-mhub",
-  "version": "0.2.4",
-  "description": "HDA Mhub driver for NEEO",
+  "version": "0.3.0",
+  "description": "HDA MHUB driver for NEEO",
   "main": "Debug_driver.js",
   "repository": {
     "type": "git",
@@ -19,31 +19,11 @@
   },
   "homepage": "https://github.com/nklerk/neeo_driver-mhub#readme",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "glob": "^7.1.2",
     "hdamhub": "git+https://github.com/nklerk/HDAmhub.git",
-    "neeo-sdk": "^0.52.15",
-    "nyc": "^12.0.2"
+    "neeo-sdk": "^0.52.15"
   },
   "scripts": {
-    "test": "nyc mocha --exit \"test/**/*.js\"",
-    "jshint": "jshint --show-non-errors --verbose lib/**/*.js",
     "start": "neeo-sdk start"
-  },
-  "nyc": {
-    "check-coverage": true,
-    "lines": 43,
-    "statements": 43,
-    "functions": 37,
-    "branches": 41,
-    "include": [
-      "lib/**/*.js"
-    ],
-    "all": true,
-    "reporter": [
-      "text-summary",
-      "lcov"
-    ]
   },
   "neeoSdkOptions": {
     "serverName": "neeo-sdk-server",

@@ -25,7 +25,11 @@ In the NEEO app search for: HDA, HDANYWHERE, Custom Pronto HEX
 
 ## Running the driver.
 
-This driver requires NodeJs to be installed.
+The use of this driver requires:
+
+- NodeJs to be installed.
+- MDNS resolving. (install bonjour SDK service on windows./ Install avahi on linux.).
+- A system where the driver can continuously run.
 
 Download the driver files and extract them,
 Use a terminal/command prompt and go to the extracted folder.
@@ -34,9 +38,23 @@ Install dependencies with "npm install".
 
 Start the driver with "npm start".
 
-For debugging use "node Debug_driver.js"
+For debugging,
+edit Debug_driver.js and adjust IP and port number.
+then run it with "node Debug_driver.js"
+
+## Developer.
+
+This code is written by Niels de Klerk. I'm a tech enthousiast and I code intergrations for fun.
+Feel free to use my work both private or commercialy for free as in beer.
+you can buy me one at https://www.paypal.me/NielsdeKlerk
+Are you part of a company and want to sponsor my work? feel free to contact me.
 
 ## Version history:
+
+#### Version 0.3.0
+
+- Code cleaning.
+- disabled customDriver.js. To enable it edit devices\mhub\index.js
 
 #### Version 0.2.4
 

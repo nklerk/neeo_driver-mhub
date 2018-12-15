@@ -6,6 +6,8 @@ const mappings = require("./mappings");
 const CONSTANTS = require("./constants");
 const dns = require("dns");
 
+// DNS caching alternative for Windows hosts.
+// Windows host resolves every MDNS queery and result in to much latency.
 let cachedMhubaddress = {};
 
 module.exports = class controller {
@@ -16,76 +18,57 @@ module.exports = class controller {
 
   onButtonPressed(commandName, deviceId) {
     console.log(`${commandName} Button pressed for ${deviceId}`);
-    new Promise((resolve, reject) => {
-      let [mhub, io] = deviceId.split("_uControl_");
-      let api = getAPI(mhub);
-      let commandNumber = mappings.neeoButtonToHdaButton()[commandName] || commandName.replace("uControl_", "");
-      api.executeUcontrolCommand(io, commandNumber);
-      resolve();
-    });
+    const [mhub, io] = deviceId.split("_uControl_");
+    const api = getAPI(mhub);
+    const commandNumber = mappings.neeoButtonToHdaButton()[commandName] || commandName.replace("uControl_", "");
+    api.executeUcontrolCommand(io, commandNumber);
   }
 
+  // Device Discovery.
   async discoverDevices(optionalDeviceId, deviceType) {
-    console.log(`Discovery Ucontrol: ${optionalDeviceId}, ${deviceType}`);
     let ucDrivers = [];
     let mhubs = [];
+    // If no deviceId is provided then do a discovery.
     if (typeof optionalDeviceId == "undefined") {
-      console.log("[CONTROLLER] discovery call");
       mhubs = await hdaMhub.discover();
     } else {
-      console.log("[CONTROLLER] Requesting uControll driver: ", optionalDeviceId);
-      let [mhub, io] = optionalDeviceId.split("_uControl_");
+      // deviceId is build as `${mhub.host}_uControl_${io}`;
+      const [mhub, io] = optionalDeviceId.split("_uControl_");
       mhubs = [new hdaMhub.api(mhub)];
     }
     for (let mhub of mhubs) {
-      console.log(`Found host: ${mhub.host}`);
-      let uControlStatus = await mhub.getUControlStatus();
-      let uControlPorts = getUcontrolPorts(uControlStatus);
+      const uControlStatus = await mhub.getUControlStatus();
+      const uControlPorts = getUcontrolPorts(uControlStatus);
       for (let io of uControlPorts) {
         const uControl = await mhub.getUControlState(io);
         if (typeof uControl != "undefined") {
-          let id = `${mhub.host}_uControl_${io}`;
-          let deviceName = `${mhub.host.replace(".local", "")}: ${io}, ${uControl.name}`;
-          console.log(`Building NEEO driver for ${deviceName}`);
-          let ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
-          ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
-          ucDriver.setSpecificName(deviceName);
-          let type = mappings.hdaDevicetypeToNeeoDevicetype()[uControl.type] || "ACCESSOIRE";
-          ucDriver.setType(type);
-          buildButtons(ucDriver, uControl.irpack);
-          ucDriver.addButtonHander(this.onButtonPressed);
-          ucDrivers.push({ id, name: deviceName, device: ucDriver });
+          const id = `${mhub.host}_uControl_${io}`;
+          const deviceName = `${mhub.host.replace(".local", "")}: ${io}, ${uControl.name}`;
+          const driver = this.buildDriver(deviceName, uControl, id);
+          ucDrivers.push(driver);
         }
       }
     }
     console.log(`Offering drivers to NEEO.`);
     return ucDrivers;
   }
+
+  // function to build dynamic drivers.
+  buildDriver(deviceName, uControl, id) {
+    console.log(`Building NEEO driver for ${deviceName}`);
+    const type = mappings.hdaDevicetypeToNeeoDevicetype()[uControl.type] || "ACCESSOIRE";
+    const ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
+
+    ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
+    ucDriver.setSpecificName(deviceName);
+    ucDriver.setType(type);
+    buildButtons(ucDriver, uControl.irpack);
+    ucDriver.addButtonHander(this.onButtonPressed);
+    return { id, name: deviceName, device: ucDriver };
+  }
 };
 
-function getAPI(mhub) {
-  let api;
-  if (typeof cachedMhubaddress[mhub] === "undefined") {
-    api = new hdaMhub.api(mhub);
-  } else {
-    api = cachedMhubaddress[mhub].api;
-  }
-  cacheResolve(mhub);
-  return api;
-}
-
-function cacheResolve(mhub) {
-  if (typeof cachedMhubaddress[mhub] === "undefined" || cachedMhubaddress[mhub].time + 30000 < Date.now()) {
-    dns.lookup(mhub, (err, address, family) => {
-      if (!err) {
-        let api = new hdaMhub.api(address);
-        cachedMhubaddress[mhub] = { ip: address, time: Date.now(), api };
-        console.log(`IP for ${mhub} is: ${address}`);
-      }
-    });
-  }
-}
-
+// function for building buttons.
 function buildButtons(mhubDriver, irpack) {
   for (let ir of irpack) {
     let label = mappings.hdaButtonToNeeoButton()[ir.id];
@@ -97,6 +80,31 @@ function buildButtons(mhubDriver, irpack) {
       label = ir.label.toUpperCase();
       mhubDriver.addButton({ name: `uControl_${ir.id}`, label: ir.label });
     }
+  }
+}
+
+// Getting API with caching.
+function getAPI(mhub) {
+  let api;
+  if (typeof cachedMhubaddress[mhub] === "undefined") {
+    api = new hdaMhub.api(mhub);
+  } else {
+    api = cachedMhubaddress[mhub].api;
+  }
+  cacheResolve(mhub);
+  return api;
+}
+
+// Resolve MDNS with caching.
+function cacheResolve(mhub) {
+  if (typeof cachedMhubaddress[mhub] === "undefined" || cachedMhubaddress[mhub].time + 30000 < Date.now()) {
+    dns.lookup(mhub, (err, address, family) => {
+      if (!err) {
+        const api = new hdaMhub.api(address);
+        cachedMhubaddress[mhub] = { ip: address, time: Date.now(), api };
+        console.log(`IP for ${mhub} is: ${address}`);
+      }
+    });
   }
 }
 

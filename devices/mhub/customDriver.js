@@ -8,7 +8,7 @@ module.exports.drivers = () => {
       manufacturer: "SONY", // Manufacturer name.
       deviceName: "Bluray Player (EXAMPLE)", // name of the device.
       deviceType: "DVD", // device type, use one of these: "MEDIAPLAYER", "GAMECONSOLE", "PROJECTOR", "AVRECEIVER", "DVB", "DVD" or "TV"
-      mhubHostname: "MHUB431U.local", // use the multicast hostname (mdns), or ip address.
+      mhubHostname: "192.168.1.15", // use the multicast hostname (mdns), or ip address.
       mhubIoPort: "1", //the io port on the mhub where the device is connected to
       buttons: {
         //Button name : PRONTO HEX,  Use NEEO naming convention, reference the NEEO SDK documentation

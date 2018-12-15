@@ -12,7 +12,8 @@ module.exports = class controller {
   }
 
   onButtonPressed(commandName, deviceId) {
-    let api = new hdaMhub.api(deviceId);
+    console.log(`${commandName} Button pressed for ${deviceId}`);
+    const api = new hdaMhub.api(deviceId);
 
     if (commandName == "POWER ON") api.powerOn();
     if (commandName == "POWER OFF") api.powerOff();
@@ -20,29 +21,33 @@ module.exports = class controller {
       const [NULL, input, output] = commandName.match(/INPUT HDMI ([0-9])([a-z])/);
       api.switchOutputInput(output, input);
     }
-    console.log(`${commandName} Button pressed for ${deviceId}`);
   }
 
   async discoverDevices(optionalDeviceId) {
     let mhubdrivers = [];
     let mhubs = [];
+
+    // If no deviceId is provided then do a discovery.
     if (typeof optionalDeviceId == "undefined") {
-      console.log("[CONTROLLER] discovery call");
+      // returns all discovered mhub devices and their API functions.
       mhubs = await hdaMhub.discover();
     } else {
-      console.log("[CONTROLLER] Requesting HDA MHUB: ", optionalDeviceId);
+      // returns the provided deviceId's API functions.
       mhubs = [new hdaMhub.api(optionalDeviceId)];
     }
+    // For any discovered of requested mhub.
     for (let driver of mhubs) {
-      let mhubsysinfo = await driver.getSystemInfo();
-      let id = driver.host;
-      let deviceName = id.replace(".local", "");
+      const id = driver.host;
+      const deviceName = id.replace(".local", "");
+      const mhubsysinfo = await driver.getSystemInfo();
+      const [inputs, outputs] = mhubGetInputsOutputs(mhubsysinfo);
+
+      //build a driver.
       let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
       mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
       mhubDriver.setSpecificName(deviceName);
-      mhubDriver.setType("HDMISWITCH");
+      mhubDriver.setType(CONSTANTS.HDMISWITCH);
       mhubDriver.addCapability("dynamicDevice");
-      let [inputs, outputs] = mhubGetInputsOutputs(mhubsysinfo);
       mhubBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
       mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
       mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
@@ -53,6 +58,7 @@ module.exports = class controller {
   }
 };
 
+// Provide systeminfo API data and returns all inputs and outputs.
 function mhubGetInputsOutputs(mhubsysinfo) {
   let inputs = [];
   let outputs = [];
@@ -80,6 +86,7 @@ function mhubGetInputsOutputs(mhubsysinfo) {
   return [inputs, outputs];
 }
 
+//Building buttons for all input/output posibilities.
 function mhubBuildInputOutputButtons(mhubDriver, inputs, outputs) {
   for (let input of inputs) {
     for (let output of outputs) {

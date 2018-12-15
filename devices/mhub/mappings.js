@@ -1,5 +1,6 @@
 "use strict";
 
+// mappings from HDA device types to NEEO device types.
 function hdaDevicetypeToNeeoDevicetype() {
   return {
     "Media Player": "MEDIAPLAYER",
@@ -15,6 +16,7 @@ function hdaDevicetypeToNeeoDevicetype() {
   };
 }
 
+//map HDA key id's to NEEO button names.
 function hdaButtonToNeeoButton() {
   return {
     "0": "DIGIT 0",
@@ -80,6 +82,7 @@ function hdaButtonToNeeoButton() {
   };
 }
 
+// Map NEEO buttons to HDA key ID's
 function neeoButtonToHdaButton() {
   let response = {};
   const buttons = hdaButtonToNeeoButton();

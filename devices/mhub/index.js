@@ -6,50 +6,26 @@ const uControlController = require("./uControlController").build();
 const customController = require("./customController").build();
 const CONSTANTS = require("./constants");
 
-//const mController = mhubController.build();
 let devices = [];
 
-// Building MHUB System driver
-let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
-mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
-mhubDriver.addAdditionalSearchToken("HDA");
-mhubDriver.enableDiscovery(
-  {
-    headerText: CONSTANTS.DISCOVER_HEADER,
-    description: CONSTANTS.DISCOVER_DESCRIPTION,
-    enableDynamicDeviceBuilder: true
-  },
-  optionalDeviceId => mhubController.discoverDevices(optionalDeviceId)
-);
-devices.push(mhubDriver);
+buidDriver(CONSTANTS.MHUB_DEVICE_NAME, mhubController);
+buidDriver(CONSTANTS.UCONTROL_DEVICE_NAME, uControlController);
+//buidDriver(CONSTANTS.CUSTOM_DEVICE_NAME, customController);  //// removing the first two // characters enables the customDriver.js.
 
-// Building uControl driver
-let ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
-ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
-ucDriver.addAdditionalSearchToken("HDA");
-ucDriver.enableDiscovery(
-  {
-    headerText: CONSTANTS.DISCOVER_HEADER,
-    description: CONSTANTS.DISCOVER_DESCRIPTION,
-    enableDynamicDeviceBuilder: true
-  },
-  optionalDeviceId => uControlController.discoverDevices(optionalDeviceId)
-);
-devices.push(ucDriver);
-
-// Building custom uControl driver
-let customDriver = neeoapi.buildDevice(CONSTANTS.CUSTOM_DEVICE_NAME);
-customDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
-customDriver.addAdditionalSearchToken("HDA");
-customDriver.enableDiscovery(
-  {
-    headerText: CONSTANTS.DISCOVER_HEADER,
-    description: CONSTANTS.DISCOVER_DESCRIPTION,
-    enableDynamicDeviceBuilder: true
-  },
-  optionalDeviceId => customController.discoverDevices(optionalDeviceId)
-);
-devices.push(customDriver);
+function buidDriver(deviceName, mhubClass) {
+  let mhubDriver = neeoapi.buildDevice(deviceName);
+  mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
+  mhubDriver.addAdditionalSearchToken(CONSTANTS.ADDSEARCHTOKEN);
+  mhubDriver.enableDiscovery(
+    {
+      headerText: CONSTANTS.DISCOVER_HEADER,
+      description: CONSTANTS.DISCOVER_DESCRIPTION,
+      enableDynamicDeviceBuilder: true
+    },
+    optionalDeviceId => mhubClass.discoverDevices(optionalDeviceId)
+  );
+  devices.push(mhubDriver);
+}
 
 module.exports = {
   devices

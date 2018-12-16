@@ -17,6 +17,9 @@ module.exports = class controller {
 
     if (commandName == "POWER ON") api.powerOn();
     if (commandName == "POWER OFF") api.powerOff();
+    if (commandName == "REBOOT") api.reboot();
+    if (commandName == "POWER CYCLE") api.powerCycle();
+    if (commandName == "IDENTIFY") api.identify();
     if (commandName.match(/INPUT HDMI ([0-9])([a-z])/)) {
       const [NULL, input, output] = commandName.match(/INPUT HDMI ([0-9])([a-z])/);
       api.switchOutputInput(output, input);
@@ -51,6 +54,9 @@ module.exports = class controller {
       mhubBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
       mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
       mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
+      mhubDriver.addButton({ name: "REBOOT", label: "REBOOT" });
+      mhubDriver.addButton({ name: "POWER CYCLE", label: "POWER CYCLE" });
+      mhubDriver.addButton({ name: "IDENTIFY", label: "IDENTIFY" });
       mhubDriver.addButtonHander(this.onButtonPressed);
       mhubdrivers.push({ id, name: deviceName, device: mhubDriver });
     }

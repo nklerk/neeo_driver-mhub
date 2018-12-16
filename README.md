@@ -55,6 +55,9 @@ Are you part of a company and want to sponsor my work? feel free to contact me.
 
 - Code cleaning.
 - disabled customDriver.js. To enable it edit devices\mhub\index.js
+- Added Reboot.
+- Added Power Cycle.
+- Added Identify.
 
 #### Version 0.2.4
 

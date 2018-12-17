@@ -50,9 +50,6 @@ module.exports = class controller {
       }
     }
     console.log(`Offering drivers to NEEO.`);
-    console.log("######## START OF DEBUG ########");
-    console.log(ucDrivers);
-    console.log("######## END OF DEBUG ########");
     return ucDrivers;
   }
 
@@ -72,15 +69,21 @@ module.exports = class controller {
 
 // function for building buttons.
 function buildButtons(mhubDriver, irpack) {
+  let uniqueButtons = [];
   for (let ir of irpack) {
-    let label = mappings.hdaButtonToNeeoButton()[ir.id];
-    if (label) {
-      //if a uControl to NEEO mapping exist
-      mhubDriver.addButton({ name: label, label });
+    if (uniqueButtons.indexOf(ir.id) == -1) {
+      let label = mappings.hdaButtonToNeeoButton()[ir.id];
+      if (label) {
+        //if a uControl to NEEO mapping exist
+        mhubDriver.addButton({ name: label, label });
+      } else {
+        //if a uControl to NEEO mapping does not exist
+        label = ir.label.toUpperCase();
+        mhubDriver.addButton({ name: `uControl_${ir.id}`, label: ir.label });
+      }
+      uniqueButtons.push(ir.id);
     } else {
-      //if a uControl to NEEO mapping does not exist
-      label = ir.label.toUpperCase();
-      mhubDriver.addButton({ name: `uControl_${ir.id}`, label: ir.label });
+      //button allready exists.
     }
   }
 }

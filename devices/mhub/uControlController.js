@@ -44,27 +44,21 @@ module.exports = class controller {
         if (typeof uControl != "undefined") {
           const id = `${mhub.host}_uControl_${io}`;
           const deviceName = `${mhub.host.replace(".local", "")}: ${io}, ${uControl.name}`;
-          const driver = this.buildDriver(deviceName, uControl, id);
-          ucDrivers.push(driver);
+
+          console.log(`Building NEEO driver for ${deviceName}`);
+          const type = mappings.hdaDevicetypeToNeeoDevicetype()[uControl.type] || "ACCESSOIRE";
+          const ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
+          ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
+          ucDriver.setSpecificName(deviceName);
+          ucDriver.setType(type);
+          buildButtons(ucDriver, uControl.irpack);
+          ucDriver.addButtonHander(this.onButtonPressed);
+          ucDrivers.push({ id, name: deviceName, device: ucDriver });
         }
       }
     }
     console.log(`Offering drivers to NEEO.`);
     return ucDrivers;
-  }
-
-  // function to build dynamic drivers.
-  buildDriver(deviceName, uControl, id) {
-    console.log(`Building NEEO driver for ${deviceName}`);
-    const type = mappings.hdaDevicetypeToNeeoDevicetype()[uControl.type] || "ACCESSOIRE";
-    const ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
-
-    ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
-    ucDriver.setSpecificName(deviceName);
-    ucDriver.setType(type);
-    buildButtons(ucDriver, uControl.irpack);
-    ucDriver.addButtonHander(this.onButtonPressed);
-    return { id, name: deviceName, device: ucDriver };
   }
 };
 

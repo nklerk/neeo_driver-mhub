@@ -47,7 +47,7 @@ module.exports = class controller {
 
           console.log(`Building NEEO driver for ${deviceName}`);
           const type = mappings.hdaDevicetypeToNeeoDevicetype()[uControl.type] || "ACCESSOIRE";
-          const ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
+          let ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
           ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
           ucDriver.setSpecificName(deviceName);
           ucDriver.setType(type);

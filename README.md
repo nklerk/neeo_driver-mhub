@@ -51,6 +51,10 @@ Are you part of a company and want to sponsor my work? feel free to contact me.
 
 ## Version history:
 
+#### Version 0.3.1
+
+- added NPM module hdamhub
+
 #### Version 0.3.0
 
 - Code cleaning.

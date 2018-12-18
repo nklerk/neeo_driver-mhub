@@ -25,7 +25,7 @@ module.exports = class controller {
     console.log(`Using mhhub:${host}, io:${io}`);
     const api = getAPI(host);
     let cashedIndex = `${host}-${io}-${commandName}`;
-    const prontoHex = cachedMhubIrPronto[cashedIndex];
+    const prontoHex = cachedMhubIrPronto[cashedIndex].replace(/,/g, "");
     api.sendProntoHex(io, prontoHex);
   }
 

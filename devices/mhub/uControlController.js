@@ -10,6 +10,9 @@ const dns = require("dns");
 // Windows host resolves every MDNS queery and result in to much latency.
 let cachedMhubaddress = {};
 
+//Mhub driver cashing to improve possible performance.
+let cachedMhubIrPronto = {};
+
 module.exports = class controller {
   constructor() {}
   static build() {
@@ -18,72 +21,77 @@ module.exports = class controller {
 
   onButtonPressed(commandName, deviceId) {
     console.log(`${commandName} Button pressed for ${deviceId}`);
-    const [mhub, io] = deviceId.split("_uControl_");
-    const api = getAPI(mhub);
-    const commandNumber = mappings.neeoButtonToHdaButton()[commandName] || commandName.replace("uControl_", "");
-    api.executeUcontrolCommand(io, commandNumber);
+    const [host, io] = deviceId.split("_uControl_");
+    console.log(`Using mhhub:${host}, io:${io}`);
+    const api = getAPI(host);
+    let cashedIndex = `${host}-${io}-${commandName}`;
+    const prontoHex = cachedMhubIrPronto[cashedIndex];
+    api.sendProntoHex(io, prontoHex);
   }
 
   // Device Discovery.
-  async discoverDevices(optionalDeviceId, deviceType) {
+  async discoverDevices(optionalDeviceId) {
     let ucDrivers = [];
     let mhubs = [];
-    // If no deviceId is provided then do a discovery.
-    if (typeof optionalDeviceId == "undefined") {
-      mhubs = await hdaMhub.discover();
+
+    if (typeof optionalDeviceId !== "undefined") {
+      // Specific Discovery
+      const [host, io] = optionalDeviceId.split("_uControl_");
+      let mhub = new hdaMhub.api(host);
+      const uControl = await mhub.getUControlState(io);
+      if (typeof uControl != "undefined") {
+        const driver = this.buildDriver(host, uControl, io);
+        ucDrivers.push(driver);
+      }
     } else {
-      // deviceId is build as `${mhub.host}_uControl_${io}`;
-      const [mhub, io] = optionalDeviceId.split("_uControl_");
-      mhubs = [new hdaMhub.api(mhub)];
-    }
-    for (let mhub of mhubs) {
-      const uControlStatus = await mhub.getUControlStatus();
-      const uControlPorts = getUcontrolPorts(uControlStatus);
-      for (let io of uControlPorts) {
-        const uControl = await mhub.getUControlState(io);
-        if (typeof uControl != "undefined") {
-          const id = `${mhub.host}_uControl_${io}`;
-          const deviceName = `${mhub.host.replace(".local", "")}: ${io}, ${uControl.name}`;
-          const driver = this.buildDriver(deviceName, uControl, id);
-          ucDrivers.push(driver);
+      // Discover All..
+      mhubs = await hdaMhub.discover();
+      for (let mhub of mhubs) {
+        const uControlStatus = await mhub.getUControlStatus();
+        const uControlPorts = getUcontrolPorts(uControlStatus);
+        for (let io of uControlPorts) {
+          const uControl = await mhub.getUControlState(io);
+          if (typeof uControl != "undefined") {
+            const driver = this.buildDriver(mhub.host, uControl, io);
+            ucDrivers.push(driver);
+          }
         }
       }
     }
+
     console.log(`Offering drivers to NEEO.`);
     return ucDrivers;
   }
 
   // function to build dynamic drivers.
-  buildDriver(deviceName, uControl, id) {
-    console.log(`Building NEEO driver for ${deviceName}`);
+  buildDriver(host, uControl, io) {
+    const id = `${host}_uControl_${io}`;
+    const deviceName = `${host.replace(".local", "")}: ${io}, ${uControl.name}`;
     const type = mappings.hdaDevicetypeToNeeoDevicetype()[uControl.type] || "ACCESSOIRE";
+    console.log(`Building NEEO driver for ${deviceName}`);
     let ucDriver = neeoapi.buildDevice(CONSTANTS.UCONTROL_DEVICE_NAME);
     ucDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
     ucDriver.setSpecificName(deviceName);
     ucDriver.setType(type);
-    buildButtons(ucDriver, uControl.irpack);
+    buildButtons(ucDriver, uControl.irpack, host, io);
     ucDriver.addButtonHander(this.onButtonPressed);
     return { id, name: deviceName, device: ucDriver };
   }
 };
 
 // function for building buttons.
-function buildButtons(mhubDriver, irpack) {
+function buildButtons(mhubDriver, irpack, host, io) {
   let uniqueButtons = [];
   for (let ir of irpack) {
     if (uniqueButtons.indexOf(ir.id) == -1) {
-      let label = mappings.hdaButtonToNeeoButton()[ir.id];
-      if (label) {
-        //if a uControl to NEEO mapping exist
-        mhubDriver.addButton({ name: label, label });
-      } else {
-        //if a uControl to NEEO mapping does not exist
-        label = ir.label.toUpperCase();
-        mhubDriver.addButton({ name: `uControl_${ir.id}`, label: ir.label });
+      let commandName = mappings.hdaButtonToNeeoButton()[ir.id];
+      if (!commandName) {
+        commandName = ir.label.toUpperCase();
       }
+      let cashedIndex = `${host}-${io}-${commandName}`;
+      cachedMhubIrPronto[cashedIndex] = ir.code;
+      mhubDriver.addButton({ name: commandName, label: commandName });
       uniqueButtons.push(ir.id);
-    } else {
-      //button allready exists.
     }
   }
 }

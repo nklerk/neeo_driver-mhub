@@ -3,7 +3,7 @@
 const neeoapi = require("neeo-sdk");
 const mhubController = require("./mhubController").build();
 const uControlController = require("./uControlController").build();
-const customController = require("./customController").build();
+//const customController = require("./customController").build();
 const CONSTANTS = require("./constants");
 
 let devices = [];

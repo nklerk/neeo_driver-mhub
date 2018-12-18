@@ -51,6 +51,10 @@ Are you part of a company and want to sponsor my work? feel free to contact me.
 
 ## Version history:
 
+#### Version 0.3.5
+
+- Fully rewritten uControl to use prontoHex as it should be faster then direct control.
+
 #### Version 0.3.4
 
 - Fixed an issue with duplicate buttons.

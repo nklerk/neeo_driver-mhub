@@ -51,7 +51,7 @@ module.exports = class controller {
       mhubDriver.setSpecificName(deviceName);
       mhubDriver.setType(CONSTANTS.HDMISWITCH);
       mhubDriver.addCapability("dynamicDevice");
-      mhubBuildInputOutputButtons(mhubDriver, inputs, outputs); //Build input buttons.
+      mhubBuildInputOutputButtons(mhubDriver, inputs, outputs);
       mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
       mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
       mhubDriver.addButton({ name: "REBOOT", label: "REBOOT" });

@@ -110,7 +110,7 @@ function getAPI(mhub) {
 
 // Resolve MDNS with caching.
 function cacheResolve(mhub) {
-  if (typeof cachedMhubaddress[mhub] === "undefined" || cachedMhubaddress[mhub].time + 30000 < Date.now()) {
+  if (typeof cachedMhubaddress[mhub] === "undefined" || cachedMhubaddress[mhub].time + 300000 < Date.now()) {
     dns.lookup(mhub, (err, address, family) => {
       if (!err) {
         const api = new hdaMhub.api(address);

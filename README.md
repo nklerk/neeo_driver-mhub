@@ -1,4 +1,4 @@
-# HDANYWHERE MHUB driver for NEEO.
+# HDANYWHERE MHUB driver for NEEO. for PERFORMANCE TESTING ONLY
 
 This driver adds HDANYWHERE MHUB support to NEEO.
 the driver includes:

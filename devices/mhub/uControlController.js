@@ -22,14 +22,16 @@ module.exports = class controller {
 
   onButtonPressed(commandName, deviceId) {
     perf.p2();
-    console.log(`${commandName} Button pressed for ${deviceId}`);
+    //console.log(`${commandName} Button pressed for ${deviceId}`)
     const [host, io] = deviceId.split("_uControl_");
-    console.log(`Using mhhub:${host}, io:${io}`);
+    //console.log(`Using mhhub:${host}, io:${io}`);
     const api = getAPI(host);
     let cashedIndex = `${host}-${io}-${commandName}`;
     const prontoHex = cachedMhubIrPronto[cashedIndex].replace(/,/g, "");
     perf.p3();
-    api.sendProntoHex(io, prontoHex);
+    api.sendProntoHex(io, prontoHex).then(r => {
+      perf.p4();
+    });
   }
 
   // Device Discovery.
@@ -53,6 +55,7 @@ module.exports = class controller {
         const uControlStatus = await mhub.getUControlStatus();
         try {
           const uControlPorts = getUcontrolPorts(uControlStatus);
+
           for (let io of uControlPorts) {
             const uControl = await mhub.getUControlState(io);
             if (typeof uControl != "undefined") {
@@ -99,7 +102,7 @@ function buildButtons(mhubDriver, irpack, host, io) {
         commandName = ir.label.toUpperCase();
       }
       let cashedIndex = `${host}-${io}-${commandName}`;
-      cachedMhubIrPronto[cashedIndex] = `0000 0073 0000 0021 0060 0020 0010 0010 0010 0010 0010 0020 0010 0020 0030 0020 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0020 0010 0010 0010 0010 0010 0010 0020 0010 0010 0010 0010 0010 0010 0010 0010 0020 0020 0010 0010 0010 0010 0010 0010 0020 0020 0010 0010 0010 0010 0020 0020 0010 09CD`; //ir.code;
+      cachedMhubIrPronto[cashedIndex] = "00000073000000210060002000100010001000100010002000100020003000200010001000100010001000100010001000100010001000100010001000100010001000100010001000200010001000100010001000100020001000100010001000100010001000100020002000100010001000100010001000100010001000100020002000200010001009DD"; //ir.code;
       mhubDriver.addButton({ name: commandName, label: commandName });
       uniqueButtons.push(ir.id);
     }
@@ -125,7 +128,7 @@ function cacheResolve(mhub) {
       if (!err) {
         const api = new hdaMhub.api(address);
         cachedMhubaddress[mhub] = { ip: address, time: Date.now(), api };
-        console.log(`IP for ${mhub} is: ${address}`);
+        //console.log(`IP for ${mhub} is: ${address}`);
       }
     });
   }

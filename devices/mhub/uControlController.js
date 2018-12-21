@@ -48,13 +48,20 @@ module.exports = class controller {
       mhubs = await hdaMhub.discover();
       for (let mhub of mhubs) {
         const uControlStatus = await mhub.getUControlStatus();
-        const uControlPorts = getUcontrolPorts(uControlStatus);
-        for (let io of uControlPorts) {
-          const uControl = await mhub.getUControlState(io);
-          if (typeof uControl != "undefined") {
-            const driver = this.buildDriver(mhub.host, uControl, io);
-            ucDrivers.push(driver);
+        try {
+          const uControlPorts = getUcontrolPorts(uControlStatus);
+          for (let io of uControlPorts) {
+            const uControl = await mhub.getUControlState(io);
+            if (typeof uControl != "undefined") {
+              const driver = this.buildDriver(mhub.host, uControl, io);
+              ucDrivers.push(driver);
+            }
           }
+        } catch (error) {
+          console.log(`ERROR: ${id} isn't responding as expected.`);
+          console.log(`Posible causes could be:`);
+          console.log(` - MHUB is not updated to the latest firmware.`);
+          console.log(` - Discovered device is not a MHUB device.`);
         }
       }
     }

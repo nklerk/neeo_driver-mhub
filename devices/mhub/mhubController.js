@@ -40,25 +40,33 @@ module.exports = class controller {
     }
     // For any discovered of requested mhub.
     for (let driver of mhubs) {
+      console.log(`Found ${driver.host}`);
       const id = driver.host;
       const deviceName = id.replace(".local", "");
-      const mhubsysinfo = await driver.getSystemInfo();
-      const [inputs, outputs] = mhubGetInputsOutputs(mhubsysinfo);
+      try {
+        const mhubsysinfo = await driver.getSystemInfo();
+        const [inputs, outputs] = mhubGetInputsOutputs(mhubsysinfo);
 
-      //build a driver.
-      let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
-      mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
-      mhubDriver.setSpecificName(deviceName);
-      mhubDriver.setType(CONSTANTS.HDMISWITCH);
-      mhubDriver.addCapability("dynamicDevice");
-      mhubBuildInputOutputButtons(mhubDriver, inputs, outputs);
-      mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
-      mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
-      mhubDriver.addButton({ name: "REBOOT", label: "REBOOT" });
-      mhubDriver.addButton({ name: "POWER CYCLE", label: "POWER CYCLE" });
-      mhubDriver.addButton({ name: "IDENTIFY", label: "IDENTIFY" });
-      mhubDriver.addButtonHander(this.onButtonPressed);
-      mhubdrivers.push({ id, name: deviceName, device: mhubDriver });
+        //build a driver.
+        let mhubDriver = neeoapi.buildDevice(CONSTANTS.MHUB_DEVICE_NAME);
+        mhubDriver.setManufacturer(CONSTANTS.MHUB_MANUFACTURER);
+        mhubDriver.setSpecificName(deviceName);
+        mhubDriver.setType(CONSTANTS.HDMISWITCH);
+        mhubDriver.addCapability("dynamicDevice");
+        mhubBuildInputOutputButtons(mhubDriver, inputs, outputs);
+        mhubDriver.addButton({ name: "POWER ON", label: "POWER ON" });
+        mhubDriver.addButton({ name: "POWER OFF", label: "POWER OFF" });
+        mhubDriver.addButton({ name: "REBOOT", label: "REBOOT" });
+        mhubDriver.addButton({ name: "POWER CYCLE", label: "POWER CYCLE" });
+        mhubDriver.addButton({ name: "IDENTIFY", label: "IDENTIFY" });
+        mhubDriver.addButtonHander(this.onButtonPressed);
+        mhubdrivers.push({ id, name: deviceName, device: mhubDriver });
+      } catch (error) {
+        console.log(`ERROR: ${id} isn't responding as expected.`);
+        console.log(`Posible causes could be:`);
+        console.log(` - MHUB is not updated to the latest firmware.`);
+        console.log(` - Discovered device is not a MHUB device.`);
+      }
     }
     return mhubdrivers;
   }

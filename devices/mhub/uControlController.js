@@ -4,6 +4,7 @@ const hdaMhub = require("hdamhub");
 const neeoapi = require("neeo-sdk");
 const mappings = require("./mappings");
 const CONSTANTS = require("./constants");
+const perf = require("./perf");
 const dns = require("dns");
 
 // DNS caching alternative for Windows hosts.
@@ -20,12 +21,14 @@ module.exports = class controller {
   }
 
   onButtonPressed(commandName, deviceId) {
+    perf.p2();
     console.log(`${commandName} Button pressed for ${deviceId}`);
     const [host, io] = deviceId.split("_uControl_");
     console.log(`Using mhhub:${host}, io:${io}`);
     const api = getAPI(host);
     let cashedIndex = `${host}-${io}-${commandName}`;
     const prontoHex = cachedMhubIrPronto[cashedIndex].replace(/,/g, "");
+    perf.p3();
     api.sendProntoHex(io, prontoHex);
   }
 
@@ -96,7 +99,7 @@ function buildButtons(mhubDriver, irpack, host, io) {
         commandName = ir.label.toUpperCase();
       }
       let cashedIndex = `${host}-${io}-${commandName}`;
-      cachedMhubIrPronto[cashedIndex] = ir.code;
+      cachedMhubIrPronto[cashedIndex] = `0000 0073 0000 0021 0060 0020 0010 0010 0010 0010 0010 0020 0010 0020 0030 0020 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0020 0010 0010 0010 0010 0010 0010 0020 0010 0010 0010 0010 0010 0010 0010 0010 0020 0020 0010 0010 0010 0010 0010 0010 0020 0020 0010 0010 0010 0010 0020 0020 0010 09CD`; //ir.code;
       mhubDriver.addButton({ name: commandName, label: commandName });
       uniqueButtons.push(ir.id);
     }

@@ -2,6 +2,7 @@
 
 const neeoapi = require("neeo-sdk");
 const hdadrivers = require("./devices/mhub");
+const perf = require("./devices/mhub/perf");
 
 console.log("#");
 console.log("# Use 'Debug_driver.js' for debug and development.");
@@ -18,6 +19,7 @@ neeoapi
   })
   .then(() => {
     console.log("# READY! use the NEEO app to search for 'HDA' ");
+    perf.start();
   })
   .catch(err => {
     console.error("ERROR!", err);
